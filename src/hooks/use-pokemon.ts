@@ -8,6 +8,7 @@ export const usePokemon = (pokemons: Pokemon[]) => {
       return {
         queryKey: ["pokemon", { pokemon }],
         queryFn: () => getPokemonDetail(pokemon.url),
+        staleTime: Infinity,
       };
     }),
     combine: (results) => {

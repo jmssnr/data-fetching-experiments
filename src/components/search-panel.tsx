@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { usePokemon } from "@/hooks/use-pokemon";
 import { useDebounce } from "@uidotdev/usehooks";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 
 const ResultList = ({ pokemons }: { pokemons: Pokemon[] }) => {
   const { data, isPending, isError } = usePokemon(pokemons);
@@ -31,7 +32,10 @@ const ResultList = ({ pokemons }: { pokemons: Pokemon[] }) => {
             <CardTitle>{pokemon?.name}</CardTitle>
           </CardHeader>
           <CardContent>
-            <img src={pokemon?.sprites.front_shiny} />
+            <Avatar className="h-20 w-20 border p-0">
+              <AvatarImage src={pokemon?.sprites.front_shiny} />
+              <AvatarFallback>{pokemon?.name}</AvatarFallback>
+            </Avatar>
           </CardContent>
         </Card>
       ))}
@@ -40,30 +44,28 @@ const ResultList = ({ pokemons }: { pokemons: Pokemon[] }) => {
 };
 
 const SearchPanel = ({ pokemons }: { pokemons: Pokemon[] }) => {
-  const [value, setValue] = useState("");
-  const searchTerm = useDebounce(value, 300);
+  const [search, setSearch] = useState("");
 
   const filtered = pokemons
     .filter((pokemon) =>
-      pokemon.name
-        .toLowerCase()
-        .trim()
-        .includes(searchTerm.toLowerCase().trim())
+      pokemon.name.toLowerCase().trim().includes(search.toLowerCase().trim())
     )
     .slice(0, 10);
+
+  const debouncedFilter = useDebounce(filtered, 2000);
 
   return (
     <div className="flex flex-col gap-4">
       <Input
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
         placeholder="Search..."
       />
       <Separator />
-      {value === "" ? (
+      {search === "" ? (
         <p>Enter a search term</p>
       ) : (
-        <ResultList pokemons={filtered} />
+        <ResultList pokemons={debouncedFilter} />
       )}
     </div>
   );

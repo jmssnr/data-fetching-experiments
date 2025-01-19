@@ -1,12 +1,10 @@
-import SearchPanel from "@/components/search-panel";
-import { getAllPokemon } from "@/lib/api";
+import IssueTable from "@/components/issue-table";
 
-export default async function Home() {
-  const data = await getAllPokemon();
+export default function Home() {
   return (
-    <main className="max-w-[80ch] flex flex-col m-auto p-5 gap-9">
+    <main className="max-w-[100ch] flex flex-col m-auto p-5 gap-9">
       <h1 className="font-bold text-3xl">Search Pokemon</h1>
-      <SearchPanel pokemons={data} />
+      <IssueTable />
     </main>
   );
 }
